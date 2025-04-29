@@ -8,10 +8,11 @@ app.secret_key = 'your-secret-key'
 
 def get_db():
     return mysql.connector.connect(
-        host='localhost',
-        user='root',
+        host='db4free.net',
+        user='azay1234',
         password='Az@y8848',
-        database='hospital'
+        database='hospitalmgmt',
+        port=3306
     )
 
 # ========== Authentication Routes ==========
