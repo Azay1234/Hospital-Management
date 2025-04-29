@@ -48,7 +48,7 @@ def login():
 
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id, username, password, role FROM user WHERE username = %s", (username,))
+        cursor.execute("SELECT id, username, password, role FROM users WHERE username = %s", (username,))
         user = cursor.fetchone()
         conn.close()
 
@@ -80,7 +80,7 @@ def register():
         cursor = conn.cursor()
         try:
             cursor.execute(
-                "INSERT INTO user (username, password, role) VALUES (%s, %s, %s)",
+                "INSERT INTO users (username, password, role) VALUES (%s, %s, %s)",
                 (username, hashed_pw, role)
             )
             conn.commit()
@@ -98,7 +98,6 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
 # ========== Patient Routes ==========
 @app.route('/patients')
 def patients():
