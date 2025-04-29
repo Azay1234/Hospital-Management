@@ -8,10 +8,10 @@ app.secret_key = 'your-secret-key'
 
 def get_db():
     return mysql.connector.connect(
-        host='db4free.net',
-        user='azay1234',
-        password='Az@y8848',
-        database='hospitalmgmt',
+        host='sql5.freesqldatabase.com',
+        user='sql5776006',
+        password='3A3vTevFhF',
+        database='sql5776006',
         port=3306
     )
 
