@@ -7,15 +7,19 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key'
 
 def get_db():
-    return mysql.connector.connect(
-        host='sql5.freesqldatabase.com',
-        user='sql5776006',
-        password='3A3vTevFhF',
-        database='sql5776006',
-        port=3306
-    )
-
-# ========== Authentication Routes ==========
+    try:
+        connection = mysql.connector.connect(
+            host='sql5.freesqldatabase.com',
+            user='sql5776006',
+            password='3A3vTevFhF',
+            database='sql5776006',
+            port=3306
+        )
+        print("✅ Connected to database successfully!")
+        return connection
+    except mysql.connector.Error as err:
+        print(f"❌ Database connection failed: {err}")
+        return None# ========== Authentication Routes ==========
 @app.route('/')
 def home():
     if 'user_id' not in session:
