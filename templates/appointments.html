@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Appointments{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Appointments</h2>
+    <a href="/appointments/add" class="btn btn-success">Add Appointment</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Purpose</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in appointments %}
+        <tr>
+            <td>{{ a.appointment_id }}</td>
+            <td>{{ a.patient_name }}</td>
+            <td>{{ a.doctor_name }}</td>
+            <td>{{ a.appointment_date }}</td>
+            <td>{{ a.appointment_time }}</td>
+            <td>{{ a.purpose or 'N/A' }}</td>
+            <td>
+                <span class="badge bg-{% if a.status == 'Scheduled' %}primary{% elif a.status == 'Completed' %}success{% elif a.status == 'Cancelled' %}danger{% else %}warning{% endif %}">
+                    {{ a.status }}
+                </span>
+            </td>
+            <td>
+                <a href="/appointments/edit/{{ a.appointment_id }}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="/appointments/delete/{{ a.appointment_id }}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

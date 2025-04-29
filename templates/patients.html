@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Patients{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Patients</h2>
+    <a href="/patients/add" class="btn btn-success">Add Patient</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>Blood Type</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in patients %}
+        <tr>
+            <td>{{ p.patient_id }}</td>
+            <td>{{ p.first_name }} {{ p.last_name }}</td>
+            <td>{{ p.age }}</td>
+            <td>{{ p.gender }}</td>
+            <td>{{ p.blood_type or 'N/A' }}</td>
+            <td>{{ p.phone }}</td>
+            <td>{{ p.email or 'N/A' }}</td>
+            <td>
+                <a href="/patients/edit/{{ p.patient_id }}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="/patients/delete/{{ p.patient_id }}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

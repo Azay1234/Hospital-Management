@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Billing{% endblock %}
+
+{% block content %}
+<h2>Edit Billing Record</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>Patient</label>
+        <select name="patient_id" class="form-control" required>
+            {% for p in patients %}
+            <option value="{{ p.patient_id }}" {% if p.patient_id == bill.patient_id %}selected{% endif %}>
+                {{ p.first_name }} {{ p.last_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Appointment</label>
+        <select name="appointment_id" class="form-control">
+            <option value="">None</option>
+            {% for a in appointments %}
+            <option value="{{ a.appointment_id }}" {% if a.appointment_id == bill.appointment_id %}selected{% endif %}>
+                {{ a.appointment_date }} {{ a.appointment_time }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Total Amount</label>
+        <input type="number" step="0.01" name="total_amount" class="form-control" value="{{ bill.total_amount }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Paid Amount</label>
+        <input type="number" step="0.01" name="paid_amount" class="form-control" value="{{ bill.paid_amount }}">
+    </div>
+    <div class="mb-3">
+        <label>Billing Date</label>
+        <input type="date" name="billing_date" class="form-control" value="{{ bill.billing_date }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Due Date</label>
+        <input type="date" name="due_date" class="form-control" value="{{ bill.due_date }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Status</label>
+        <select name="status" class="form-control">
+            <option value="Unpaid" {% if bill.status == 'Unpaid' %}selected{% endif %}>Unpaid</option>
+            <option value="Paid" {% if bill.status == 'Paid' %}selected{% endif %}>Paid</option>
+            <option value="Partial" {% if bill.status == 'Partial' %}selected{% endif %}>Partial</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Payment Method</label>
+        <input type="text" name="payment_method" class="form-control" value="{{ bill.payment_method }}">
+    </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" name="insurance_claim" class="form-check-input" id="insuranceCheck" {% if bill.insurance_claim %}checked{% endif %}>
+        <label class="form-check-label" for="insuranceCheck">Insurance Claim</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Billing</button>
+    <a href="/billing" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

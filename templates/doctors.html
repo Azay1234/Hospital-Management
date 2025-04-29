@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Doctors{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Doctors</h2>
+    <a href="/doctors/add" class="btn btn-success">Add Doctor</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Specialization</th>
+            <th>Department</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for d in doctors %}
+        <tr>
+            <td>{{ d.doctor_id }}</td>
+            <td>{{ d.first_name }} {{ d.last_name }}</td>
+            <td>{{ d.specialization }}</td>
+            <td>{{ d.department or 'N/A' }}</td>
+            <td>{{ d.phone }}</td>
+            <td>{{ d.email }}</td>
+            <td>
+                <a href="/doctors/edit/{{ d.doctor_id }}" class="btn btn-sm btn-primary">Edit</a>
+                <a href="/doctors/delete/{{ d.doctor_id }}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

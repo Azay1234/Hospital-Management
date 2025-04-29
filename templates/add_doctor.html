@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Add Doctor{% endblock %}
+
+{% block content %}
+<h2>Add Doctor</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>First Name</label>
+        <input type="text" name="first_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Last Name</label>
+        <input type="text" name="last_name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Specialization</label>
+        <input type="text" name="specialization" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Phone</label>
+        <input type="text" name="phone" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Department</label>
+        <input type="text" name="department" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>License Number</label>
+        <input type="text" name="license_number" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Joining Date</label>
+        <input type="date" name="joining_date" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Availability Schedule</label>
+        <textarea name="availability_schedule" class="form-control" rows="3"></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Add Doctor</button>
+</form>
+{% endblock %}

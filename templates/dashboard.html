@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ session.username }} ({{ session.role|title }})</h2>
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Patients</h5>
+                <p class="card-text display-4">{{ total_patients }}</p>
+                <a href="/patients" class="btn btn-light btn-sm">View Patients</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Doctors</h5>
+                <p class="card-text display-4">{{ total_doctors }}</p>
+                <a href="/doctors" class="btn btn-light btn-sm">View Doctors</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Upcoming Appointments</h5>
+                <p class="card-text display-4">{{ upcoming_appointments }}</p>
+                <a href="/appointments" class="btn btn-light btn-sm">View Appointments</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Recent Activities</h5>
+    </div>
+    <div class="card-body">
+        <p>Quick access to system features</p>
+        <div class="d-grid gap-2 d-md-block">
+            <a href="/patients/add" class="btn btn-primary">Add New Patient</a>
+            <a href="/doctors/add" class="btn btn-success">Add New Doctor</a>
+            <a href="/appointments/add" class="btn btn-info">Schedule Appointment</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

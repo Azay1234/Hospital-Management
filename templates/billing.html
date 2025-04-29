@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Billing{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Billing Records</h2>
+    <a href="/billing/add" class="btn btn-success">Add New Bill</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Bill ID</th>
+                        <th>Patient</th>
+                        <th>Appointment</th>
+                        <th>Total Amount</th>
+                        <th>Paid Amount</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr>
+                        <td>{{ bill.bill_id }}</td>
+                        <td>{{ bill.patient_name }}</td>
+                        <td>
+                            {% if bill.appointment_date %}
+                                {{ bill.appointment_date }} {{ bill.appointment_time }}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>${{ "%.2f"|format(bill.total_amount) }}</td>
+                        <td>${{ "%.2f"|format(bill.paid_amount) }}</td>
+                        <td>${{ "%.2f"|format(bill.balance) }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if bill.status == 'Paid' %}bg-success
+                                {% elif bill.status == 'Partial' %}bg-warning
+                                {% else %}bg-danger
+                                {% endif %}">
+                                {{ bill.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/billing/edit/{{ bill.bill_id }}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="/billing/delete/{{ bill.bill_id }}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

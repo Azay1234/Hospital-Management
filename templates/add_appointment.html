@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Add Appointment{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2>Add New Appointment</h2>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Patient</label>
+                    <select name="patient_id" class="form-select" required>
+                        <option value="" selected disabled>Select Patient</option>
+                        {% for p in patients %}
+                        <option value="{{ p.patient_id }}">{{ p.first_name }} {{ p.last_name }} (ID: {{ p.patient_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Doctor</label>
+                    <select name="doctor_id" class="form-select" required>
+                        <option value="" selected disabled>Select Doctor</option>
+                        {% for d in doctors %}
+                        <option value="{{ d.doctor_id }}">Dr. {{ d.first_name }} {{ d.last_name }} ({{ d.specialization }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="appointment_date" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Time</label>
+                    <input type="time" name="appointment_time" class="form-control" required>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Purpose</label>
+                    <input type="text" name="purpose" class="form-control" placeholder="e.g. Routine Checkup">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="Scheduled" selected>Scheduled</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="No-Show">No-Show</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Duration (minutes)</label>
+                    <select name="duration" class="form-select">
+                        <option value="15">15 minutes</option>
+                        <option value="30" selected>30 minutes</option>
+                        <option value="45">45 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                </div>
+                <div class="col-12 mb-3">
+                    <label class="form-label">Notes</label>
+                    <textarea name="notes" class="form-control" rows="3" placeholder="Any special notes or requirements"></textarea>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        Schedule Appointment
+                    </button>
+                    <a href="/appointments" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
