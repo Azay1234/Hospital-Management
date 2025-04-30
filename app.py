@@ -320,9 +320,11 @@ def appointments():
 
 @app.route('/appointments/add', methods=['GET', 'POST'])
 def add_appointment():
-    if 'user_id' not in session or not has_role('admin', 'staff'):
-    flash('Unauthorized', 'danger')
-    return redirect(url_for('login'))
+    if 'user_id' not in session or not has_role('admin'):
+    	flash('Unauthorized', 'danger')
+    	return redirect(url_for('login'))
+
+
 
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
