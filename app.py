@@ -527,8 +527,7 @@ def delete_billing(bill_id):
 # ========== Medical Records Routes ==========
 @app.route('/medical_records')
 def medical_records():
-   if 'user_id' not in session:
-if not has_role('admin', 'doctor'):
+   if 'user_id' not in session or not has_role('admin', 'staff'):
     flash('Unauthorized', 'danger')
     return redirect(url_for('medical_records'))
     return redirect(url_for('login'))
