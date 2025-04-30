@@ -121,10 +121,9 @@ def patients():
 
 @app.route('/patients/add', methods=['GET', 'POST'])
 def add_patient():
-   if 'user_id' not in session or not has_role('admin', 'staff'):
-    flash('Unauthorized', 'danger')
-    return redirect(url_for('login'))
-
+    if 'user_id' not in session or not has_role('admin', 'staff'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('login'))
 
     if request.method == 'POST':
         conn = get_db()
@@ -220,10 +219,9 @@ def doctors():
 
 @app.route('/doctors/add', methods=['GET', 'POST'])
 def add_doctor():
-   if 'user_id' not in session or not has_role('admin'):
-    flash('Unauthorized', 'danger')
-    return redirect(url_for('login'))
-
+    if 'user_id' not in session or not has_role('admin'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('login'))
 
     if request.method == 'POST':
         conn = get_db()
@@ -249,6 +247,7 @@ def add_doctor():
         return redirect(url_for('doctors'))
 
     return render_template('add_doctor.html')
+
 
 @app.route('/doctors/edit/<int:doctor_id>', methods=['GET', 'POST'])
 def edit_doctor(doctor_id):
