@@ -527,10 +527,9 @@ def delete_billing(bill_id):
 # ========== Medical Records Routes ==========
 @app.route('/medical_records')
 def medical_records():
-   if 'user_id' not in session or not has_role('admin', 'staff'):
-    flash('Unauthorized', 'danger')
-    return redirect(url_for('login'))
-
+    if 'user_id' not in session or not has_role('admin', 'staff'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('login'))
 
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
