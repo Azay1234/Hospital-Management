@@ -6,6 +6,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
 
+def has_role(*roles):
+    return 'role' in session and session['role'] in roles
+
+
 def get_db():
     try:
         connection = mysql.connector.connect(
@@ -116,11 +120,10 @@ def patients():
 
 @app.route('/patients/add', methods=['GET', 'POST'])
 def add_patient():
-    if 'user_id' not in session:
-    if not has_role('admin', 'staff'):
-        flash('Unauthorized', 'danger')
-        return redirect(url_for('patients'))
-        return redirect(url_for('login'))
+   if 'user_id' not in session or not has_role('admin', 'staff'):
+    flash('Unauthorized', 'danger')
+    return redirect(url_for('login'))
+
 
     if request.method == 'POST':
         conn = get_db()
@@ -216,11 +219,10 @@ def doctors():
 
 @app.route('/doctors/add', methods=['GET', 'POST'])
 def add_doctor():
-    if 'user_id' not in session:
-    if not has_role('admin'):
-        flash('Unauthorized', 'danger')
-        return redirect(url_for('doctors'))
-        return redirect(url_for('login'))
+   if 'user_id' not in session or not has_role('admin'):
+    flash('Unauthorized', 'danger')
+    return redirect(url_for('login'))
+
 
     if request.method == 'POST':
         conn = get_db()
@@ -317,11 +319,9 @@ def appointments():
 
 @app.route('/appointments/add', methods=['GET', 'POST'])
 def add_appointment():
-    if 'user_id' not in session:
-    if not has_role('admin', 'staff'):
-        flash('Unauthorized', 'danger')
-        return redirect(url_for('appointments'))
-        return redirect(url_for('login'))
+    if 'user_id' not in session or not has_role('admin', 'staff'):
+    flash('Unauthorized', 'danger')
+    return redirect(url_for('login'))
 
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -429,11 +429,9 @@ def billing():
 
 @app.route('/billing/add', methods=['GET', 'POST'])
 def add_billing():
-    if 'user_id' not in session:
-    if not has_role('admin', 'staff'):
-        flash('Unauthorized', 'danger')
-        return redirect(url_for('billing'))
-        return redirect(url_for('login'))
+    if 'user_id' not in session or not has_role('admin', 'staff'):
+    flash('Unauthorized', 'danger')
+    return redirect(url_for('login'))
 
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
@@ -526,8 +524,12 @@ def delete_billing(bill_id):
 # ========== Medical Records Routes ==========
 @app.route('/medical_records')
 def medical_records():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+   if 'user_id' not in session:
+if not has_role('admin', 'doctor'):
+    flash('Unauthorized', 'danger')
+    return redirect(url_for('medical_records'))
+    return redirect(url_for('login'))
+
 
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
