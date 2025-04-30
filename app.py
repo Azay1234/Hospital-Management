@@ -26,8 +26,9 @@ def get_db():
         return None# ========== Authentication Routes ==========
 @app.route('/')
 def home():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+    if 'user_id' not in session or not has_role('admin', 'staff'):
+    flash('Unauthorized', 'danger')
+    return redirect(url_for('login'))
 
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
