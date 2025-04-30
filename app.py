@@ -117,6 +117,9 @@ def patients():
 @app.route('/patients/add', methods=['GET', 'POST'])
 def add_patient():
     if 'user_id' not in session:
+    if not has_role('admin', 'staff'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('patients'))
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -214,6 +217,9 @@ def doctors():
 @app.route('/doctors/add', methods=['GET', 'POST'])
 def add_doctor():
     if 'user_id' not in session:
+    if not has_role('admin'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('doctors'))
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -312,6 +318,9 @@ def appointments():
 @app.route('/appointments/add', methods=['GET', 'POST'])
 def add_appointment():
     if 'user_id' not in session:
+    if not has_role('admin', 'staff'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('appointments'))
         return redirect(url_for('login'))
 
     conn = get_db()
@@ -421,6 +430,9 @@ def billing():
 @app.route('/billing/add', methods=['GET', 'POST'])
 def add_billing():
     if 'user_id' not in session:
+    if not has_role('admin', 'staff'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('billing'))
         return redirect(url_for('login'))
 
     conn = get_db()
@@ -520,18 +532,89 @@ def medical_records():
     conn = get_db()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("""
-        SELECT m.*, CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
-               CONCAT(d.first_name, ' ', d.last_name) AS doctor_name
+        SELECT m.*, 
+               CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+               CONCAT(d.first_name, ' ', d.last_name) AS doctor_name,
+               p.patient_id, d.doctor_id
         FROM MedicalRecords m
         JOIN Patients p ON m.patient_id = p.patient_id
         JOIN Doctors d ON m.doctor_id = d.doctor_id
+        ORDER BY m.visit_date DESC
     """)
     records = cursor.fetchall()
     conn.close()
     return render_template('medical_records.html', records=records)
 
+@app.route('/medical_records/view/<int:record_id>')
+def view_medical_record(record_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT m.*, 
+               CONCAT(p.first_name, ' ', p.last_name) AS patient_name,
+               CONCAT(d.first_name, ' ', d.last_name) AS doctor_name
+        FROM MedicalRecords m
+        JOIN Patients p ON m.patient_id = p.patient_id
+        JOIN Doctors d ON m.doctor_id = d.doctor_id
+        WHERE m.record_id = %s
+    """, (record_id,))
+    record = cursor.fetchone()
+    conn.close()
+    
+    if not record:
+        flash('Medical record not found', 'danger')
+        return redirect(url_for('medical_records'))
+    
+    return render_template('view_medical_record.html', record=record)
+
 @app.route('/medical_records/add', methods=['GET', 'POST'])
 def add_medical_record():
+    if 'user_id' not in session:
+    if not has_role('admin', 'doctor'):
+        flash('Unauthorized', 'danger')
+        return redirect(url_for('medical_records'))
+        return redirect(url_for('login'))
+
+    conn = get_db()
+    cursor = conn.cursor(dictionary=True)
+
+    if request.method == 'POST':
+        try:
+            cursor.execute("""
+                INSERT INTO MedicalRecords
+                (patient_id, doctor_id, diagnosis, prescription, notes, follow_up_date)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (
+                request.form['patient_id'],
+                request.form['doctor_id'],
+                request.form['diagnosis'],
+                request.form['prescription'],
+                request.form['notes'],
+                request.form.get('follow_up_date') or None
+            ))
+            conn.commit()
+            flash('Medical record added successfully!', 'success')
+            return redirect(url_for('medical_records'))
+        except Exception as e:
+            conn.rollback()
+            flash(f'Error adding record: {str(e)}', 'danger')
+        finally:
+            conn.close()
+
+    cursor.execute("SELECT patient_id, CONCAT(first_name, ' ', last_name) AS name FROM Patients")
+    patients = cursor.fetchall()
+    cursor.execute("SELECT doctor_id, CONCAT(first_name, ' ', last_name) AS name FROM Doctors")
+    doctors = cursor.fetchall()
+    conn.close()
+    return render_template('add_medical_record.html', 
+                         patients=patients, 
+                         doctors=doctors)
+
+@app.route('/medical_records/edit/<int:record_id>', methods=['GET', 'POST'])
+def edit_medical_record(record_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
 
@@ -539,30 +622,69 @@ def add_medical_record():
     cursor = conn.cursor(dictionary=True)
 
     if request.method == 'POST':
-        cursor.execute("""
-            INSERT INTO MedicalRecords
-            (patient_id, doctor_id, diagnosis, prescription, notes, follow_up_date)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (
-            request.form['patient_id'],
-            request.form['doctor_id'],
-            request.form['diagnosis'],
-            request.form['prescription'],
-            request.form['notes'],
-            request.form.get('follow_up_date')
-        ))
-        conn.commit()
-        conn.close()
-        flash('Medical record added successfully!', 'success')
-        return redirect(url_for('medical_records'))
+        try:
+            cursor.execute("""
+                UPDATE MedicalRecords SET
+                patient_id = %s,
+                doctor_id = %s,
+                diagnosis = %s,
+                prescription = %s,
+                notes = %s,
+                follow_up_date = %s
+                WHERE record_id = %s
+            """, (
+                request.form['patient_id'],
+                request.form['doctor_id'],
+                request.form['diagnosis'],
+                request.form['prescription'],
+                request.form['notes'],
+                request.form.get('follow_up_date') or None,
+                record_id
+            ))
+            conn.commit()
+            flash('Medical record updated successfully!', 'success')
+            return redirect(url_for('medical_records'))
+        except Exception as e:
+            conn.rollback()
+            flash(f'Error updating record: {str(e)}', 'danger')
+        finally:
+            conn.close()
 
-    cursor.execute("SELECT * FROM Patients")
+    cursor.execute("SELECT * FROM MedicalRecords WHERE record_id = %s", (record_id,))
+    record = cursor.fetchone()
+    cursor.execute("SELECT patient_id, CONCAT(first_name, ' ', last_name) AS name FROM Patients")
     patients = cursor.fetchall()
-    cursor.execute("SELECT * FROM Doctors")
+    cursor.execute("SELECT doctor_id, CONCAT(first_name, ' ', last_name) AS name FROM Doctors")
     doctors = cursor.fetchall()
     conn.close()
-    return render_template('add_medical_record.html', patients=patients, doctors=doctors)
+    
+    if not record:
+        flash('Medical record not found', 'danger')
+        return redirect(url_for('medical_records'))
+    
+    return render_template('edit_medical_record.html', 
+                         record=record,
+                         patients=patients,
+                         doctors=doctors)
 
+@app.route('/medical_records/delete/<int:record_id>', methods=['POST'])
+def delete_medical_record(record_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("DELETE FROM MedicalRecords WHERE record_id = %s", (record_id,))
+        conn.commit()
+        flash('Medical record deleted successfully!', 'success')
+    except Exception as e:
+        conn.rollback()
+        flash(f'Error deleting record: {str(e)}', 'danger')
+    finally:
+        conn.close()
+    
+    return redirect(url_for('medical_records'))
 # ========== Run Server ==========
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=10000)
