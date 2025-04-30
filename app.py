@@ -576,7 +576,7 @@ def view_medical_record(record_id):
 
 @app.route('/medical_records/add', methods=['GET', 'POST'])
 def add_medical_record():
-    if 'user_id' not in session or if not has_role('admin', 'doctor'):
+    if 'user_id' not in session or not has_role('admin', 'doctor'):
         flash('Unauthorized', 'danger')
         return redirect(url_for('medical_records'))
         return redirect(url_for('login'))
