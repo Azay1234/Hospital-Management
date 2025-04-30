@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Medical Records{% endblock %}
+{% block content %}
+<h2>Medical Records</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Diagnosis</th>
+            <th>Prescription</th>
+            <th>Visit Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.patient_name }}</td>
+            <td>{{ record.doctor_name }}</td>
+            <td>{{ record.diagnosis }}</td>
+            <td>{{ record.prescription }}</td>
+            <td>{{ record.visit_date }}</td>
+            <td>
+                <a href="{{ url_for('view_medical_record', record_id=record.record_id) }}" class="btn btn-sm btn-info">View</a>
+                <a href="{{ url_for('edit_medical_record', record_id=record.record_id) }}" class="btn btn-sm btn-warning">Edit</a>
+                <form method="post" action="{{ url_for('delete_medical_record', record_id=record.record_id) }}" style="display:inline;">
+                    <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this record?')">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('add_medical_record') }}" class="btn btn-primary">Add Record</a>
+{% endblock %}

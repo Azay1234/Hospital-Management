@@ -192,7 +192,7 @@ def edit_patient(patient_id):
     conn.close()
     return render_template('edit_patient.html', patient=patient)
 
-@app.route('/patients/delete/<int:patient_id>')
+@app.route('/patients/delete/<int:patient_id>', methods=['POST'])
 def delete_patient(patient_id):
     if 'user_id' not in session:
         return redirect(url_for('login'))
@@ -529,7 +529,6 @@ def delete_billing(bill_id):
 def medical_records():
    if 'user_id' not in session or not has_role('admin', 'staff'):
     flash('Unauthorized', 'danger')
-    return redirect(url_for('medical_records'))
     return redirect(url_for('login'))
 
 
@@ -578,7 +577,6 @@ def view_medical_record(record_id):
 def add_medical_record():
     if 'user_id' not in session or not has_role('admin', 'doctor'):
         flash('Unauthorized', 'danger')
-        return redirect(url_for('medical_records'))
         return redirect(url_for('login'))
 
     conn = get_db()

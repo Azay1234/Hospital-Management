@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Medical Record{% endblock %}
+
+{% block content %}
+<h2>Edit Medical Record</h2>
+<form method="post">
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label>Patient</label>
+            <select name="patient_id" class="form-control" required>
+                {% for patient in patients %}
+                    <option value="{{ patient.patient_id }}" {% if patient.patient_id == record.patient_id %}selected{% endif %}>{{ patient.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Doctor</label>
+            <select name="doctor_id" class="form-control" required>
+                {% for doctor in doctors %}
+                    <option value="{{ doctor.doctor_id }}" {% if doctor.doctor_id == record.doctor_id %}selected{% endif %}>{{ doctor.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Diagnosis</label>
+            <input type="text" name="diagnosis" value="{{ record.diagnosis }}" class="form-control" required>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Prescription</label>
+            <input type="text" name="prescription" value="{{ record.prescription }}" class="form-control">
+        </div>
+        <div class="col-md-12 mb-3">
+            <label>Notes</label>
+            <textarea name="notes" class="form-control" rows="3">{{ record.notes }}</textarea>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label>Follow-up Date</label>
+            <input type="date" name="follow_up_date" value="{{ record.follow_up_date }}" class="form-control">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Update Record</button>
+            <a href="{{ url_for('medical_records') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

@@ -3,80 +3,36 @@
 {% block title %}View Medical Record{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Medical Record Details</h4>
-        </div>
-        <div class="card-body">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <h5>Patient Information</h5>
-                    <p><strong>Name:</strong> {{ record.patient_name }}</p>
-                    <p><strong>Record ID:</strong> {{ record.record_id }}</p>
-                </div>
-                <div class="col-md-6">
-                    <h5>Doctor Information</h5>
-                    <p><strong>Name:</strong> {{ record.doctor_name }}</p>
-                    <p><strong>Visit Date:</strong> {{ record.visit_date.strftime('%Y-%m-%d %H:%M') if record.visit_date }}</p>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">Diagnosis</h5>
-                        </div>
-                        <div class="card-body">
-                            {{ record.diagnosis or 'Not specified' }}
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">Prescription</h5>
-                        </div>
-                        <div class="card-body">
-                            {{ record.prescription or 'Not specified' }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">Notes</h5>
-                        </div>
-                        <div class="card-body">
-                            {{ record.notes or 'No additional notes' }}
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <h5 class="mb-0">Follow Up</h5>
-                        </div>
-                        <div class="card-body">
-                            {% if record.follow_up_date %}
-                                <p><strong>Date:</strong> {{ record.follow_up_date.strftime('%Y-%m-%d') }}</p>
-                            {% else %}
-                                <p>No follow-up scheduled</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <a href="{{ url_for('medical_records') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Records
-                </a>
-                <a href="{{ url_for('edit_medical_record', record_id=record.record_id) }}" class="btn btn-primary">
-                    <i class="fas fa-edit"></i> Edit Record
-                </a>
-            </div>
-        </div>
+<h2>Medical Record Details</h2>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Patient</label>
+        <div class="form-control">{{ record.patient_name }}</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Doctor</label>
+        <div class="form-control">{{ record.doctor_name }}</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Diagnosis</label>
+        <div class="form-control">{{ record.diagnosis }}</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Prescription</label>
+        <div class="form-control">{{ record.prescription }}</div>
+    </div>
+    <div class="col-md-12 mb-3">
+        <label class="form-label">Notes</label>
+        <div class="form-control" style="height:auto; min-height:60px">{{ record.notes }}</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Visit Date</label>
+        <div class="form-control">{{ record.visit_date }}</div>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Follow-up Date</label>
+        <div class="form-control">{{ record.follow_up_date }}</div>
     </div>
 </div>
+<a href="{{ url_for('medical_records') }}" class="btn btn-secondary">Back to List</a>
 {% endblock %}
